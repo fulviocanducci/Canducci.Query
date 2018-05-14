@@ -19,7 +19,7 @@ namespace ConsoleTest
 
             var update = f
                 .Update()
-                .Where("Id", 1).And("Id", 10)
+                .Where("Id", 1).Or("Id", 10, "<>").And("Id", 15)
                 .From("User")
                 .Columns("Name")
                 .Values("N2")

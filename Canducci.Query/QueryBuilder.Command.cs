@@ -54,7 +54,7 @@ namespace Canducci.Query
                             {
                                 dynamic where = (dynamic)wheres.GetValue(j);
                                 if (j == 0) sql.Append(" WHERE");
-                                if (j > 0) sql.Append(" AND");                                
+                                if (j > 0) sql.Append($" {where.Value.TypeLogical}");                                
                                 p = $"@p{i}";
                                 sql.Append($" {where.Value.Name}{where.Value.Comparation}{p}");
                                 dictionary.Add(p, where.Value.Value);

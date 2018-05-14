@@ -1,9 +1,9 @@
 ﻿namespace Canducci.Query.Interfaces
 {
-    public interface IAnd
+    public interface IOr
     {
-        IAnd And(string name, object value, string comparation = "=");
         IOr Or(string name, object value, string comparation = "=");
+        IAnd And(string name, object value, string compartion = "=");
         IColumns From(string table);
     }
 }
