@@ -4,13 +4,13 @@ namespace Canducci.Query
 {
     public sealed class ResultCommand : IResultCommand
     {
-        public string Raw { get; }
+        public string SqlRaw { get; }
 
         public object Parameters { get; }
 
-        public ResultCommand(string raw, object parameters = null)
+        internal ResultCommand(string sqlRaw, object parameters = null)
         {
-            Raw = raw;
+            SqlRaw = sqlRaw;
             Parameters = parameters;
         }        
     }

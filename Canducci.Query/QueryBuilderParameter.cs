@@ -27,7 +27,7 @@ namespace Canducci.Query
     /// <summary>
     /// 
     /// </summary>
-    public sealed class QueryBuilderParameter<T> : QueryBuilderParameter
+    internal sealed class QueryBuilderParameter<T> : QueryBuilderParameter
        where T : struct
     {
         /// <summary>
@@ -43,13 +43,13 @@ namespace Canducci.Query
     /// <summary>
     /// 
     /// </summary>
-    public sealed class QueryBuilderParameterString : QueryBuilderParameter
+    internal sealed class QueryBuilderParameterString : QueryBuilderParameter
     {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="value"></param>
-        public QueryBuilderParameterString(string value)
+        public QueryBuilderParameterString(string value = default)
             : base(value, typeof(string))
         {
         }

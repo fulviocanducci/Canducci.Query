@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Canducci.Query.Interfaces
+﻿namespace Canducci.Query.Interfaces
 {
     public interface IResultCommand
     {
-        string Raw { get; }
+        string SqlRaw { get; }
         object Parameters { get; }
     }
 }

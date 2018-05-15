@@ -11,6 +11,7 @@ namespace Canducci.Query
         {
             StringBuilder sql = new StringBuilder();
             sql.Clear();
+            var from = Clauses.Where(x => x.Name == "From").Select(x => x.Value).FirstOrDefault();
             var columns = (object[])Clauses.Where(x => x.Name == "Columns").FirstOrDefault().Value;
             var values = (object[])Clauses.Where(x => x.Name == "Values").FirstOrDefault().Value;
             var wheres = (object[])Clauses.Where(x => x.Name == "Where").ToArray();
@@ -21,7 +22,7 @@ namespace Canducci.Query
             {
                 case "Insert":
                     {                        
-                        sql.AppendFormat("INSERT INTO {0}", Clauses.Where(x => x.Name == "From").Select(x => x.Value).FirstOrDefault());
+                        sql.AppendFormat("INSERT INTO {0}", from);
                         sql.AppendFormat("({0})", string.Join(",", columns));
                         sql.Append(" VALUES(");                        
                         while (i < columns.Length)
@@ -37,7 +38,7 @@ namespace Canducci.Query
                     }
                 case "Update":
                     {
-                        sql.AppendFormat("UPDATE {0} SET ", Clauses.Where(x => x.Name == "From").Select(x => x.Value).FirstOrDefault());
+                        sql.AppendFormat("UPDATE {0} SET ", from);
                         while (i < columns.Length)
                         {
                             if (i > 0) sql.Append(", ");
@@ -54,10 +55,40 @@ namespace Canducci.Query
                             {
                                 dynamic where = (dynamic)wheres.GetValue(j);
                                 if (j == 0) sql.Append(" WHERE");
-                                if (j > 0) sql.Append($" {where.Value.TypeLogical}");                                
-                                p = $"@p{i}";
-                                sql.Append($" {where.Value.Name}{where.Value.Comparation}{p}");
-                                dictionary.Add(p, where.Value.Value);
+                                if (j > 0) sql.Append($" {where.Value.TypeLogical}");
+                                if (where.Value.Comparation == "IN")
+                                {
+                                    sql.Append($" {where.Value.Name} IN(");
+                                    byte s = 0;
+                                    foreach (var value in where.Value.Values)
+                                    {
+                                        p = $"@p{i++}";
+                                        if (s == 1) sql.Append(",");
+                                        sql.Append($"{p}");
+                                        dictionary.Add(p, value);
+                                        s = 1;
+                                    }                                    
+                                    sql.Append(")");
+                                }
+                                else if (where.Value.Comparation == "BETWEEN")
+                                {
+                                    p = $"@p{i}";
+                                    sql.Append($" {where.Value.Name} BETWEEN {p} AND ");
+                                    dictionary.Add(p, where.Value.Initial);
+                                    p = $"@p{++i}";
+                                    sql.Append($"{p}");
+                                    dictionary.Add(p, where.Value.End);
+                                }
+                                else if (where.Value.Comparation == "ISNULL")
+                                {
+                                    sql.Append($" {where.Value.Name} IS NULL");
+                                }
+                                else
+                                {
+                                    p = $"@p{i}";
+                                    sql.Append($" {where.Value.Name} {where.Value.Comparation} {p}");
+                                    dictionary.Add(p, where.Value.Value);
+                                }
                                 i++;
                                 j++;
                             }

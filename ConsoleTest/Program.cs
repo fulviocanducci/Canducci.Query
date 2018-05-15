@@ -1,4 +1,5 @@
 ﻿using Canducci.Query;
+using ConsoleTest.Models;
 using System;
 
 namespace ConsoleTest
@@ -7,23 +8,28 @@ namespace ConsoleTest
     {
         static void Main(string[] args)
         {
-            FactoryQueryBuilder f = new FactoryQueryBuilder();
-            
-            var insert = f
-                .Insert()
-                .From("User")
-                .Columns("Name", "Created")
-                .Values("N1", DateTime.Parse("1999-01-01"))
-                .Build();
+            Connection connection = new Connection();
 
+            FactoryQueryBuilder f = new FactoryQueryBuilder();
+
+            //var insert = f
+            //    .Insert()
+            //    .From("user")
+            //    .Columns("name", "created", "status")
+            //    .Values("Paulo", Parameter.NullValue<DateTime>(), false)
+            //    .Build();
+
+            //connection.Insert(insert);
 
             var update = f
                 .Update()
-                .Where("Id", 1).Or("Id", 10, "<>").And("Id", 15)
+                .WhereIn("Status", 1, 0)
                 .From("User")
-                .Columns("Name")
-                .Values("N2")
+                .Columns("created")
+                .Values(DateTime.Parse("10/07/2015"))
                 .Build();
+
+            connection.Update(update);
         }
     }
 }
